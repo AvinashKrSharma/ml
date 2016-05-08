@@ -61,6 +61,7 @@ pause;
 X = [ones(m, 1) X];
 
 % Initialize fitting parameters
+% n+1 is to accomodate the theta_zero term which does not has a corresponding X value
 initial_theta = zeros(n + 1, 1);
 
 % Compute and display initial cost and gradient
