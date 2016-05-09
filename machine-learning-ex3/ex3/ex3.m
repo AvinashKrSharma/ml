@@ -34,9 +34,17 @@ fprintf('Loading and Visualizing Data ...\n')
 
 load('ex3data1.mat'); % training data stored in arrays X, y
 m = size(X, 1);
+% m is 5000 here
 
+% here X is a 5000x400 matrix coz 5000 is the number of training examples and 400 is the unrolled 20x20 matriz storing
+% one training example
 % Randomly select 100 data points to display
+% here rand_indices will be set to a random permutation of [1....5000]
 rand_indices = randperm(m);
+
+% below line will pick first 100 elements from the permutation of X stored in rand_indices
+% this is equivalent to writing:
+% sel = X(1 500 3 21 ....... , :);
 sel = X(rand_indices(1:100), :);
 
 displayData(sel);

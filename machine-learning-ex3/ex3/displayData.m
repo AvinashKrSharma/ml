@@ -4,8 +4,11 @@ function [h, display_array] = displayData(X, example_width)
 %   stored in X in a nice grid. It returns the figure handle h and the 
 %   displayed array if requested.
 
+% here X is 100x400 matrix
+
 % Set example_width automatically if not passed in
 if ~exist('example_width', 'var') || isempty(example_width) 
+%   example_width is set to 20 here
 	example_width = round(sqrt(size(X, 2)));
 end
 
@@ -14,9 +17,11 @@ colormap(gray);
 
 % Compute rows, cols
 [m n] = size(X);
+%[100 400]
 example_height = (n / example_width);
 
 % Compute number of items to display
+% 10 x 10
 display_rows = floor(sqrt(m));
 display_cols = ceil(m / display_rows);
 
