@@ -43,6 +43,7 @@ Theta2_grad = zeros(size(Theta2));
 X = [ones(m, 1) X];
 I = eye(num_labels);
 yd = eye(num_labels);
+y = yd(y,:);
 a1 = X;
 z2 = a1*Theta1';
 a2 = sigmoid(z2);
