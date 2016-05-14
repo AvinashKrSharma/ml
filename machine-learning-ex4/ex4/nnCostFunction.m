@@ -16,8 +16,7 @@ function [J grad] = nnCostFunction(nn_params, ...
 
 % Reshape nn_params back into the parameters Theta1 and Theta2, the weight matrices
 % for our 2 layer neural network
-Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
-                 hidden_layer_size, (input_layer_size + 1));
+Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), hidden_layer_size, (input_layer_size + 1));
 
 Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):end), ...
                  num_labels, (hidden_layer_size + 1));
@@ -51,7 +50,11 @@ a2 = [ones(m, 1) a2];
 z3 = a2 * Theta2';
 a3 = sigmoid(z3);
 h_theta = a3;
-J = (1/m).*sum(sum(-y.*log(h_theta) - (1-y).*log(1-h_theta)));
+
+Theta1s=Theta1(:,2:end);
+Theta2s=Theta2(:,2:end);
+
+J_temp = ((1/m).*sum(sum(-y.*log(h_theta) - (1-y).*log(1-h_theta))));
 
 
 
@@ -69,6 +72,20 @@ J = (1/m).*sum(sum(-y.*log(h_theta) - (1-y).*log(1-h_theta)));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
+
+
+tridelta_1=0;
+tridelta_2=0;
+delta_3=a3-y;
+z2=[ones(m,1) z2];
+delta_2=delta_3*Theta2.*sigmoidGradient(z2);
+delta_2=delta_2(:,2:end);
+tridelta_1=tridelta_1+delta_2'*a1; % Same size as Theta1_grad (25x401)
+tridelta_2=tridelta_2+delta_3'*a2; % Same size as Theta2_grad (10x26)
+Theta1_grad=(1/m).*tridelta_1;
+Theta2_grad=(1/m).*tridelta_2;
+
+
 %
 % Part 3: Implement regularization with the cost function and gradients.
 %
@@ -78,9 +95,11 @@ J = (1/m).*sum(sum(-y.*log(h_theta) - (1-y).*log(1-h_theta)));
 %               and Theta2_grad from Part 2.
 %
 
+J = J_temp + ((lambda/(2*m)).*(sum(sum(Theta1s.^2)) + sum(sum(Theta2s.^2))));
 
 
-
+Theta1_grad(:, 2:input_layer_size+1) = Theta1_grad(:, 2:input_layer_size+1) + lambda / m * Theta1(:, 2:input_layer_size+1);
+Theta2_grad(:, 2:hidden_layer_size+1) = Theta2_grad(:, 2:hidden_layer_size+1) + lambda / m * Theta2(:, 2:hidden_layer_size+1);
 
 % -------------------------------------------------------------
 
