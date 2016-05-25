@@ -23,39 +23,28 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
-C_set=[0.01; 0.03; 0.1; 0.3; 1; 3; 10; 30];
-sigma_set=[0.01; 0.03; 0.1; 0.3; 1; 3; 10; 30];
 
-for i=1:length(C_set)
-    C = C_set(i);
+error_min = inf;
+values = [0.01 0.03 0.1 0.3 1 3 10 30];
 
-    for j=1:length(sigma_set)
-        sigma = sigma_set(j);
-
-        model= svmTrain(X, y, C, @(x1, x2) gaussianKernel(x1, x2, sigma));
-        predictions = svmPredict(model, Xval);
-
-        error(j) = mean(double(predictions ~= yval));
-
-        if (j == 1)
-            error_j = error(j);
-        else
-            error_j = [error_j; error(j)];
-        end
-
+for _C = values
+  for _sigma = values
+    fprintf('Train and evaluate (on cross validation set) for\n[_C, _sigma] = [%f %f]\n', _C, _sigma);
+    model = svmTrain(X, y, _C, @(x1, x2) gaussianKernel(x1, x2, _sigma));
+    e = mean(double(svmPredict(model, Xval) ~= yval));
+    fprintf('prediction error: %f\n', e);
+    if( e <= error_min )
+      fprintf('error_min updated!\n');
+      C = _C;
+      sigma = _sigma;
+      error_min = e;
+      fprintf('[C, sigma] = [%f %f]\n', C, sigma);
     end
-
-    if(i == 1)
-        error_i = error_j;
-        error_i = [error_i; error_j];
-    end
+    fprintf('--------\n');
+  end
 end
 
-[r,c] = find(error_i == min(min(error_i)));
-
-C = C_set(c);
-sigma = sigma(r);
-
+fprintf('\nfinish searching.\nBest value [C, sigma] = [%f %f] with prediction error = %f\n\n', C, sigma, error_min);
 
 % =========================================================================
 
