@@ -26,11 +26,19 @@ centroids = zeros(K, n);
 % Note: You can use a for-loop over the centroids to compute this.
 %
 
+% clusters = []
+% for i = 1:length(idx)
+%     clusters(idx(i)) = [clusters(idx(i)) X(idx(i))]
+% end
+%
+% for i = 1:size(clusters, 1)
+%     curr_cluster_length = size(clusters(i, :))
+%     centroids(i) = sum(clusters(i))/curr_cluster_length;
+% end
 
-
-
-
-
+for k=1:K
+    centroids(k,:) = 1./(size(X(find(idx == k)), 1)).*sum(X(find(idx == k), :));
+end
 
 
 % =============================================================
